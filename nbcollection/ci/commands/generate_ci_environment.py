@@ -35,6 +35,8 @@ def convert(options=None):
                         help="Path relative to Project DIR install")
     parser.add_argument('-w', '--enable-website-publication', default=False, action='store_true',
                         help="Enable Website Publication")
+    parser.add_argument('-g', '--enable-nightly', default=False, action='store_true',
+                        help="Enable Nightly Builds")
 
     options = parser.parse_args(options[2:])
     run_generate_ci_environment(options)

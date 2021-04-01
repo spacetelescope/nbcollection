@@ -14,7 +14,8 @@ from nbcollection.ci.renderer import render_template
 logger = logging.getLogger(__name__)
 
 
-def gen_ci_env(jobs: typing.List[BuildJob], ci_env: CIEnvironment, project_path: str, enable_website_publication: bool) -> None:
+def gen_ci_env(jobs: typing.List[BuildJob], ci_env: CIEnvironment, project_path: str, enable_website_publication: bool,
+        enable_nightly: bool = False) -> None:
     if ci_env is not CIEnvironment.CircleCI:
         raise NotImplementedError(f'CIEnvironment "{ci_env}" not supported')
 
@@ -64,6 +65,22 @@ def gen_ci_env(jobs: typing.List[BuildJob], ci_env: CIEnvironment, project_path:
                 'requires': formatted_job_names
             }
         })
+
+    if enable_nightly:
+        schedule_key = f'{NBCOLLECTION_WORKFLOW_NAME}-periodic'
+        config['workflows'][schedule_key] = copy.deepcopy(config['workflows'][NBCOLLECTION_WORKFLOW_NAME])
+        config['workflows'][schedule_key]['triggers'] = [
+               {
+                   'schedule': {
+                       'cron': '30 8 * * *',
+                       'filters': {
+                           'branches': {
+                               'only': ['main']
+                           }
+                       }
+                   }
+               }
+           ]
 
     config_path = os.path.join(project_path, '.circleci/config.yml')
     config_dirpath = os.path.dirname(config_path)
