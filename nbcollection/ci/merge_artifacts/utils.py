@@ -172,6 +172,34 @@ def latest_artifacts_from_jobs(command_context: CICommandContext,
                                  'local-file',
                                  meta_filepath)
 
+def latest_offline_artifacts(command_context: CICommandContext,
+                             merge_context: MergeContext,
+                             existing_categories: typing.List[str]) -> types.GeneratorType:
+    for job in find_build_jobs(command_context.project_path,
+                               command_context.collection_names,
+                               command_context.category_names,
+                               command_context.notebook_names,
+                               True):
+
+        namespace = '.'.join([job.collection.name, job.category.name])
+        if namespace in existing_categories:
+            continue
+
+        storage_path = os.path.join(command_context.project_path, 'artifacts', job.collection.name, job.category.name)
+        for notebook in job.category.notebooks:
+            html_filepath = os.path.join(storage_path, f'{notebook.name}.html')
+            meta_filepath = os.path.join(storage_path, f'{notebook.name}.metadata.json')
+
+            if any([
+                not os.path.exists(html_filepath),
+                not os.path.exists(meta_filepath)]):
+                continue
+
+            html_filename = os.path.basename(html_filepath)
+            yield NotebookSource(html_filename, html_filepath, job.category.name, job.collection.name, 'local-file', meta_filepath)
+            meta_filename = os.path.basename(meta_filepath)
+            yield NotebookSource(meta_filename, meta_filepath, job.category.name, job.collection.name, 'local-file', meta_filepath)
+
 
 def run_artifact_merge(command_context: CICommandContext, merge_context: MergeContext) -> types.GeneratorType:
     if command_context.mode in [CIMode.Both, CIMode.Online]:
@@ -186,6 +214,8 @@ def run_artifact_merge(command_context: CICommandContext, merge_context: MergeCo
 
     if command_context.mode in [CIMode.Both, CIMode.Local]:
         notebook_sources.extend([nb_source for nb_source in latest_artifacts_from_jobs(command_context, merge_context, existing_categories)])
+        existing_categories = [item for item in set(['.'.join([nb.collection, nb.category]) for nb in notebook_sources])]
+        notebook_sources.extend([nb_source for nb_source in latest_offline_artifacts(command_context, merge_context, existing_categories)])
 
     collections = {}
     for notebook in notebook_sources:
