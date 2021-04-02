@@ -53,7 +53,7 @@ def load_template(template_name: str, merge_context: MergeContext) -> Template:
     return JINJA2_ENVIRONMENT.get_template(template_name)
 
 
-def render_notebook_template(notebook_filepath: str, merge_context: MergeContext) -> None:
+def render_notebook_template(notebook_filepath: str, merge_context: MergeContext, coll_name: str, cat_name: str) -> None:
     with open(notebook_filepath, 'rb') as stream:
         notebook_content = stream.read().decode(ENCODING)
 
@@ -71,6 +71,8 @@ def render_notebook_template(notebook_filepath: str, merge_context: MergeContext
             'url': '{environment["website_base_url"]}/notebooks/{notebook_filename}',
             'org_name': merge_context.org_name,
             'repo_name': merge_context.repo_name,
+            'collection': coll_name,
+            'category': cat_name,
         },
         'static_url': 'static/',
         'notebook_content': notebook_content,
@@ -105,11 +107,16 @@ def extract_cells_from_html(filepath: str) -> None:
         soup = bs4.BeautifulSoup(stream.read().decode(ENCODING), 'lxml')
 
     cell_data = []
-    for cell in soup.findAll('div', {'class': 'cell'}):
+    # NGC4151_FeII_ContinuumFit
+    for cell in soup.findAll('div', {'class': ['jp-Cell', 'jp-Cell-inputWrapper']}):
         cell_data.append(str(cell))
 
-    if len(cell_data) == 0:
-        cell_data.extend([str(cell) for cell in soup.find('body', {'class': 'jp-Notebook'}).findAll()][3:])
+    if len(cell_data) < 1:
+        for cell in soup.find('div', id='notebook-container').findAll('div', {'class': 'cell'}):
+            cell_data.append(str(cell))
+
+    if len(cell_data) < 1:
+        raise NotImplementedError
 
 
     cell_data = '\n'.join(cell_data)

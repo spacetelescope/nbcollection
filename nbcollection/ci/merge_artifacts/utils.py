@@ -132,7 +132,8 @@ def latest_artifacts_from_jobs(command_context: CICommandContext,
     for job in find_build_jobs(command_context.project_path,
                                command_context.collection_names,
                                command_context.category_names,
-                               command_context.notebook_names):
+                               command_context.notebook_names,
+                               True):
 
         namespace = '.'.join([job.collection.name, job.category.name])
         if namespace in existing_categories:
@@ -254,10 +255,10 @@ def run_artifact_merge(command_context: CICommandContext, merge_context: MergeCo
                     os.makedirs(dest_dirpath)
 
                 shutil.copyfile(notebook.filepath, dest_filepath)
-                dest_filepaths.append(dest_filepath)
+                dest_filepaths.append([dest_filepath, coll.name, cat.name])
 
-    for dest_filepath in dest_filepaths:
+    for dest_filepath, coll_name, cat_name in dest_filepaths:
         html_builder.extract_cells_from_html(dest_filepath)
-        html_builder.render_notebook_template(dest_filepath, merge_context)
+        html_builder.render_notebook_template(dest_filepath, merge_context, coll_name, cat_name)
 
     logger.info(f'Website Generated: {merge_context.site_dir}')
