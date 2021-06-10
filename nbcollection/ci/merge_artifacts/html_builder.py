@@ -108,7 +108,7 @@ def extract_cells_from_html(filepath: str) -> None:
 
     cell_data = []
     # NGC4151_FeII_ContinuumFit
-    for cell in soup.findAll('div', {'class': ['jp-Cell', 'jp-Cell-inputWrapper']}):
+    for cell in soup.findAll('div', {'class': ['jp-Cell-inputWrapper']}):
         cell_data.append(str(cell))
 
     if len(cell_data) < 1:
