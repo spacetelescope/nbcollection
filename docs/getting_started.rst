@@ -32,6 +32,7 @@ the "Pull Request" build in the CI Panel
     :width: 650
     :alt: CircleCI Builds found in a Github Pull Request
 
+
 Go ahead and open the "Details" link for "Pull Request" build in another tab to inspect the CircleCI Build logs for
 this specific pull request.
 
