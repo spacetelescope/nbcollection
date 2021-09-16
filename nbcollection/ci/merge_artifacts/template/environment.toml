@@ -1,11 +1,11 @@
-title = 'Spacetelescope Notebooks'
+title = 'SpaceTelescope Notebooks'
 description = 'A space for Astronomy Notebooks'
 keywords = ['stsci', 'spacetelescope', 'jupyter', 'notebooks', 'astronomy']
-author = 'Spacetelescope'
-maintainer = 'Joe Curtin: https://jbcurtin.io/'
+author = 'spacetelescope'
+maintainer = 'Michael Gough'
 default_locale = 'en'
 website_base_url = 'https://spacetelescope.github.io/dat_pyinthesky'
-index_title = 'Spacetelescope dat_pyinthesky Index'
+index_title = 'Notebook Index'
 locale = 'en'
 notebook_title = 'JDAT Notebook'
 notebook_keywords = ['stsci', 'spacetelescope', 'jupyter', 'notebooks', 'astronomy']

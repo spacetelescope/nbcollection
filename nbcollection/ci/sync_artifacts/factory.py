@@ -33,7 +33,7 @@ def run_sync(options: argparse.Namespace) -> None:
             remote_url = os.environ['CIRCLE_REPOSITORY_URL']
             logger.info(f'Using Remote URL: {remote_url}')
             push_remote = project_repo.create_remote(options.publish_remote, remote_url)
-      
+
 
         storage_dir = os.path.join(options.project_path, options.artifact_storage_directory)
         from nbcollection.ci.scanner.utils import find_build_jobs
@@ -73,5 +73,5 @@ def run_sync(options: argparse.Namespace) -> None:
     #                                  options.notebook_names,
     #                                  options.ci_mode)
 
-    # merge_context = generate_merge_context(options.project_path, options.org, options.repo_name)
-    # run_artifact_merge(command_context, merge_context)
+    merge_context = generate_merge_context(options.project_path, options.org, options.repo_name)
+    run_artifact_merge(command_context, merge_context)

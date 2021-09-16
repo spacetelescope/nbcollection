@@ -82,7 +82,12 @@ def render_notebook_template(notebook_filepath: str, merge_context: MergeContext
 
 
 def render_index(merge_context: MergeContext, artifact_collections: typing.List[ArtifactCollection]) -> None:
-    index = load_template('index.html', merge_context)
+    REPO=merge_context.repo_name
+
+    if REPO=='dat_pyinthesky':
+        index = load_template('dat_pyinthesky_index.html', merge_context)
+    else:
+        index = load_template('index.html', merge_context)
     environment = load_environment(merge_context)
     template_context = {
         'page': {
@@ -108,7 +113,11 @@ def extract_cells_from_html(filepath: str) -> None:
 
     cell_data = []
     # NGC4151_FeII_ContinuumFit
+    #for cell in soup.findAll('div', {'class': ['jp-Cell', 'jp-Cell-inputWrapper']}):
     for cell in soup.findAll('div', {'class': ['jp-Cell-inputWrapper']}):
+        cell_data.append(str(cell))
+
+    for cell in soup.findAll('div', {'class': ['jp-Cell']}):
         cell_data.append(str(cell))
 
     if len(cell_data) < 1:

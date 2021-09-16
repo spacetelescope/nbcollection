@@ -54,6 +54,20 @@ a {
     color: #C75109 !important;
     font-size: 18px;
 }
+.table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+.#t01 tr:nth-child(even) {
+  background-color: #eee;
+}
+.#t01 tr:nth-child(odd) {
+  background-color: #fff;
+}
+.#t01 th {
+  color: white;
+  background-color: black;
+}
 .small_logo {
     padding-bottom: 10px;
     padding-top: 15px;
