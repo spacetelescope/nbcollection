@@ -110,15 +110,16 @@ def render_index(merge_context: MergeContext, artifact_collections: typing.List[
 def extract_cells_from_html(filepath: str) -> None:
     with open(filepath, 'rb') as stream:
         soup = bs4.BeautifulSoup(stream.read().decode(ENCODING), 'lxml')
-
     cell_data = []
-    # NGC4151_FeII_ContinuumFit
-    #for cell in soup.findAll('div', {'class': ['jp-Cell', 'jp-Cell-inputWrapper']}):
-    #for cell in soup.findAll('div', {'class': ['jp-Cell-inputWrapper']}):
-    #    cell_data.append(str(cell))
 
-    for cell in soup.findAll('div', {'class': ['jp-Cell-inputWrapper']}):
+    # Search out for widgets and place placeholder tag
+    for widget in soup.findAll('div', {'class': ['jupyter-widgets jp-OutputArea-output']}):
+        placeholder = soup.new_tag('img', src='../../images/jdaviz_placeholder.png height=100% width=auto')
+        widget.insert_after(placeholder.prettify())
+
+    for cell in soup.findAll('div', {'class': ['jupyter-widgets jp-OutputArea-output','jp-Cell-inputWrapper']}):
         cell_data.append(str(cell))
+
 
     if len(cell_data) < 1:
         for cell in soup.find('div', id='notebook-container').findAll('div', {'class': 'cell'}):
@@ -126,7 +127,6 @@ def extract_cells_from_html(filepath: str) -> None:
 
     if len(cell_data) < 1:
         raise NotImplementedError
-
 
     cell_data = '\n'.join(cell_data)
     with open(filepath, 'wb') as stream:
