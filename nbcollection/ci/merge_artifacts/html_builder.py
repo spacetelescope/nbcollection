@@ -114,23 +114,28 @@ def extract_cells_from_html(filepath: str) -> None:
 
     # Search out for widgets and place placeholder tag
     for widget in soup.findAll('div', {'class': ['jupyter-widgets jp-OutputArea-output']}):
-        placeholder = soup.new_tag('img', src='../../images/jdaviz_placeholder.png height=100% width=auto')
-        widget.insert_after(placeholder.prettify())
+        placeholder = soup.new_tag('img align=left height=auto width=50%', src='../../images/jdaviz_placeholder.png')
+        widget.insert_after(placeholder)
 
-    for cell in soup.findAll('div', {'class': ['jupyter-widgets jp-OutputArea-output','jp-Cell-inputWrapper']}):
-        cell_data.append(str(cell))
+    stream.close()
+
+    html=soup.prettify()
+    with open(filepath, "wb") as file:
+            file.write(html.encode(ENCODING))
+#    for cell in soup.findAll('div', {'class': ['jupyter-widgets','jp-Cell-inputWrapper', 'jp-cell']}):
+#        cell_data.append(str(cell))
 
 
-    if len(cell_data) < 1:
-        for cell in soup.find('div', id='notebook-container').findAll('div', {'class': 'cell'}):
-            cell_data.append(str(cell))
+#    if len(cell_data) < 1:
+#        for cell in soup.find('div', id='notebook-container').findAll('div', {'class': 'cell'}):
+#            cell_data.append(str(cell))
 
-    if len(cell_data) < 1:
-        raise NotImplementedError
+#    if len(cell_data) < 1:
+#        raise NotImplementedError
 
-    cell_data = '\n'.join(cell_data)
-    with open(filepath, 'wb') as stream:
-        stream.write(cell_data.encode(ENCODING))
+#    cell_data = '\n'.join(cell_data)
+#    with open(filepath, 'wb') as stream:
+#        stream.write(cell_data.encode(ENCODING))
 
 
 def render_static_assets(initial_dir: str, target_dir: str) -> None:

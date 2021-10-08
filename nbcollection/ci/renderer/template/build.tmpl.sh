@@ -7,6 +7,6 @@ if [ -f "environment.sh" ]; then
     source environment.sh
 fi
 mkdir -p "{{ notebook_context.artifact.dirpath }}"
-jupyter nbconvert --debug --to "{{ build_context.output_format }}" --execute "{{ notebook_context.path }}" --output "{{ notebook_context.artifact.path }}" --ExecutePreprocessor.timeout="{{ build_context.timeout }}"
+jupyter nbconvert --ExecutePreprocessor.store_widget_state=False --debug --to "{{ build_context.output_format }}" --execute "{{ notebook_context.path }}" --output "{{ notebook_context.artifact.path }}" --ExecutePreprocessor.timeout="{{ build_context.timeout }}"
 cd -
 exit 0
