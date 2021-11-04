@@ -1,3 +1,6 @@
+[tool.setuptools_scm]
+write_to = "pkg/_version.py"
+
 [build-system]
 requires = ["setuptools",
             "setuptools_scm",
